@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Work To Do's — Rathi Financial</title>
+<style>
+/* ── LIGHT THEME (default) ───────────────────────────────────────────────── */
+:root {
+  --urgent: #EF4444; --high: #F97316; --normal: #3B82F6; --low: #10B981; --none: #9CA3AF;
+  --bg: #F0F4FF; --card: #ffffff; --border: #E2E8F0; --text: #1E293B; --muted: #64748B;
+  --row-hover: #EEF2FF; --row-hover-text: #4F46E5;
+  --acc-hover: #F8FAFC;
+  --chip-total-bg: #EEF2FF; --chip-total-txt: #312E81;
+  --chip-today-bg: #FEF3C7; --chip-today-txt: #92400E;
+  --chip-over-bg:  #FEE2E2; --chip-over-txt:  #991B1B;
+  --count-red-bg:  #FEE2E2; --count-red-txt:  #991B1B;
+  --count-amb-bg:  #FEF3C7; --count-amb-txt:  #92400E;
+  --unassigned-border: #FEE2E2; --unassigned-hdr: #FEF2F2;
+  --stat-total: #312E81;
+  --shadow: 0 2px 10px rgba(0,0,0,0.07);
+}
+
+/* ── DARK THEME ──────────────────────────────────────────────────────────── */
+[data-theme="dark"] {
+  --bg: #0F172A; --card: #1E293B; --border: #334155; --text: #F1F5F9; --muted: #94A3B8;
+  --row-hover: #1E3A5F; --row-hover-text: #818CF8;
+  --acc-hover: #243044;
+  --chip-total-bg: #1E2D5A; --chip-total-txt: #A5B4FC;
+  --chip-today-bg: #2D2008; --chip-today-txt: #FCD34D;
+  --chip-over-bg:  #2D0F0F; --chip-over-txt:  #FCA5A5;
+  --count-red-bg:  #2D0F0F; --count-red-txt:  #FCA5A5;
+  --count-amb-bg:  #2D2008; --count-amb-txt:  #FCD34D;
+  --unassigned-border: #7F1D1D; --unassigned-hdr: #1C0A0A;
+  --stat-total: #818CF8;
+  --shadow: 0 2px 10px rgba(0,0,0,0.4);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; transition: background .25s, color .25s; }
+
+/* HEADER */
+.header { background: linear-gradient(135deg, #1E293B 0%, #312E81 100%); color: #fff; padding: 28px 32px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 12px; }
+.header-left h1 { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.5px; }
+.header-left p  { color: #94A3B8; margin-top: 4px; font-size: 0.9rem; }
+.header-right   { text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.header-right .date { font-size: 0.85rem; color: #CBD5E1; }
+.header-right .total-badge { background: rgba(255,255,255,0.15); border-radius: 20px; padding: 4px 14px; font-size: 0.8rem; color: #E2E8F0; display: inline-block; }
+
+/* DARK MODE TOGGLE */
+.theme-toggle { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 5px 12px; cursor: pointer; font-size: 0.78rem; color: #E2E8F0; display: flex; align-items: center; gap: 6px; transition: background .2s; white-space: nowrap; }
+.theme-toggle:hover { background: rgba(255,255,255,0.22); }
+
+/* STATS STRIP */
+.stats { display: flex; gap: 12px; padding: 20px 32px; flex-wrap: wrap; }
+.stat-pill { background: var(--card); border-radius: 12px; padding: 14px 22px; box-shadow: var(--shadow); flex: 1; min-width: 140px; text-align: center; border: 1px solid var(--border); transition: background .25s, border-color .25s; }
+.stat-pill .num  { font-size: 1.8rem; font-weight: 800; line-height: 1; }
+.stat-pill .lbl  { font-size: 0.75rem; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: .5px; }
+.stat-pill.total  .num { color: var(--stat-total); }
+.stat-pill.today  .num { color: #F59E0B; }
+.stat-pill.over   .num { color: #EF4444; }
+.stat-pill.unassigned .num { color: #EC4899; }
+
+/* GRID */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(440px, 1fr)); gap: 20px; padding: 0 32px 32px; }
+
+/* USER CARD */
+.card { background: var(--card); border-radius: 16px; box-shadow: var(--shadow); border: 1px solid var(--border); overflow: hidden; transition: background .25s, border-color .25s; }
+.card-header { padding: 20px 24px 16px; display: flex; align-items: center; gap: 16px; border-bottom: 1px solid var(--border); }
+.avatar { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; color: #fff; flex-shrink: 0; }
+.card-title  { flex: 1; }
+.card-title h2 { font-size: 1.05rem; font-weight: 700; }
+.card-title p  { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+.card-chips { display: flex; gap: 8px; padding: 14px 24px; flex-wrap: wrap; border-bottom: 1px solid var(--border); }
+.chip { font-size: 0.75rem; font-weight: 600; border-radius: 20px; padding: 4px 12px; }
+.chip-total   { background: var(--chip-total-bg); color: var(--chip-total-txt); }
+.chip-today   { background: var(--chip-today-bg); color: var(--chip-today-txt); }
+.chip-overdue { background: var(--chip-over-bg);  color: var(--chip-over-txt); }
+.est-row { padding: 10px 24px 14px; display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: var(--muted); border-bottom: 1px solid var(--border); }
+.est-row .est-val { font-weight: 700; color: var(--text); font-size: 0.9rem; }
+.est-row .tooltip { position: relative; cursor: help; }
+.est-row .tooltip:hover::after { content: attr(data-tip); position: absolute; bottom: 120%; left: 0; background: #1E293B; color: #fff; font-size: 0.72rem; padding: 5px 9px; border-radius: 6px; white-space: nowrap; z-index: 10; }
+
+/* PRIORITY BAR */
+.pbar-row  { padding: 10px 24px 14px; border-bottom: 1px solid var(--border); }
+.pbar-row label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); display: block; margin-bottom: 6px; }
+.pbar { display: flex; height: 8px; border-radius: 6px; overflow: hidden; gap: 2px; }
+.pbar span { border-radius: 3px; transition: width .3s; }
+.pbar-legend { display: flex; gap: 10px; margin-top: 7px; flex-wrap: wrap; }
+.pbar-legend span { font-size: 0.68rem; color: var(--muted); display: flex; align-items: center; gap: 4px; }
+.pbar-legend span::before { content:''; width:8px; height:8px; border-radius:2px; display:inline-block; }
+
+/* ACCORDIONS */
+.acc { border-bottom: 1px solid var(--border); }
+.acc:last-child { border-bottom: none; }
+.acc-btn { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 13px 24px; background: none; border: none; cursor: pointer; font-size: 0.85rem; font-weight: 600; color: var(--text); text-align: left; transition: background .15s; }
+.acc-btn:hover { background: var(--acc-hover); }
+.acc-btn .acc-label { display: flex; align-items: center; gap: 8px; }
+.acc-btn .acc-count { font-size: 0.75rem; background: var(--border); color: var(--muted); border-radius: 12px; padding: 2px 9px; font-weight: 700; }
+.acc-btn .acc-count.red   { background: var(--count-red-bg); color: var(--count-red-txt); }
+.acc-btn .acc-count.amber { background: var(--count-amb-bg); color: var(--count-amb-txt); }
+.acc-btn .chevron { color: var(--muted); font-size: 0.75rem; transition: transform .2s; }
+.acc-btn.open .chevron { transform: rotate(180deg); }
+.acc-body { display: none; max-height: 320px; overflow-y: auto; }
+.acc-body.open { display: block; }
+.task-row { display: flex; align-items: flex-start; gap: 10px; padding: 9px 24px; border-top: 1px solid var(--border); transition: background .1s; text-decoration: none; color: inherit; cursor: pointer; }
+.task-row:hover { background: var(--row-hover); }
+.task-row:hover .task-name { color: var(--row-hover-text); }
+.priority-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+.task-info { flex: 1; min-width: 0; }
+.task-name { font-size: 0.82rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color .1s; }
+.task-meta { font-size: 0.72rem; color: var(--muted); margin-top: 2px; display: flex; gap: 8px; }
+.task-meta .overdue-days { color: #EF4444; font-weight: 600; }
+.task-link { color: #94A3B8; font-size: 0.8rem; flex-shrink: 0; }
+.task-row:hover .task-link { color: var(--row-hover-text); }
+
+/* UNASSIGNED */
+.unassigned-section { margin: 0 32px 32px; }
+.unassigned-card { background: var(--card); border: 2px solid var(--unassigned-border); border-radius: 16px; overflow: hidden; transition: background .25s; }
+.unassigned-header { background: var(--unassigned-hdr); padding: 16px 24px; display: flex; align-items: center; gap: 12px; }
+.unassigned-header h3 { font-size: 1rem; font-weight: 700; color: var(--chip-over-txt); }
+.unassigned-header p  { font-size: 0.8rem; color: var(--chip-over-txt); margin-top: 2px; }
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .header { padding: 20px 16px; }
+  .stats  { padding: 14px 16px; }
+  .grid   { grid-template-columns: 1fr; padding: 0 16px 24px; }
+  .unassigned-section { margin: 0 16px 24px; }
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+// ── CONSTANTS ─────────────────────────────────────────────────────────────────
+const TODAY_START = 1779647400000; // 2026-05-25 00:00 IST
+const TODAY_END   = 1779733799999; // 2026-05-25 23:59:59 IST
+const TODAY_LABEL = "Monday, 25 May 2026";
+
+const USERS = [
+  {id:100873114, name:"Sakshi Timbadia", initials:"ST", color:"#EC4899"},
+  {id:100979918, name:"Saba Shaikh",     initials:"SS", color:"#10B981"},
+  {id:67267745,  name:"Aamir Shah",      initials:"AS", color:"#F59E0B"},
+  {id:7229060,   name:"D Das",           initials:"DD", color:"#6366F1"},
+];
+
+const TE = { // time_estimate in ms (from individual task fetches)
+  "86cvd5xhz":900000,"86cx31q5j":300000,"86cutm8x6":300000,
+  "86d0up10q":3600000,"85ztpgzj9":1200000,"86d1678a6":900000,
+  "85ztemp5e":600000,"86cvj282c":900000,"86d1mpvna":900000,
+  "86d0vxfn0":600000,"86d18x5dy":300000,"86czjjmat":1800000,
+  "85zt94pgx":300000,"86d1a2trb":2400000,"86d0huxxg":3600000,
+  "85ztkqv1k":5400000
+};
+
+// ── TASKS (177 from Work To do's + 14 from Deals = 191 open tasks) ──────────
+const RAW = [
+  // Work To do's list (900200899794) — open/to-do only
+  {id:"86d33m4xa",n:"Sushil Rathi - To get PMS details",p:"urgent",a:[7229060],d:1779748200000,u:"https://app.clickup.com/t/86d33m4xa"},
+  {id:"86d33dk54",n:"Share MOM with Shankar after checking with me",p:"urgent",a:[100873114],d:1779661800000,u:"https://app.clickup.com/t/86d33dk54"},
+  {id:"86d33dk4w",n:"Exit all short term Debentues bu 10th June",p:"high",a:[100873114],d:1779661800000,u:"https://app.clickup.com/t/86d33dk4w"},
+  {id:"86d33dk4q",n:"Shankar personal- Switch 60L to EMF 20lakhs /weekly",p:"high",a:[100873114],d:1779661800000,u:"https://app.clickup.com/t/86d33dk4q"},
+  {id:"86d33dj0w",n:"Venudhar Bhatt - Internship Quesry",p:"high",a:[7229060],d:1779661800000,u:"https://app.clickup.com/t/86d33dj0w"},
+  {id:"86d33bftb",n:"Vineeta Malik sip stop",p:"high",a:[67267745],d:1779489000000,u:"https://app.clickup.com/t/86d33bftb"},
+  {id:"86d338t0x",n:"Shankar - Give Feedback to Sakshi",p:"high",a:[7229060],d:1779661800000,u:"https://app.clickup.com/t/86d338t0x"},
+  {id:"86d336326",n:"Vinay - documentation physical to demat",p:"high",a:[100979918],d:1779661800000,u:"https://app.clickup.com/t/86d336326"},
+  {id:"86d3362u7",n:"Vinay - LF Audit",p:"high",a:[100979918],d:1779661800000,u:"https://app.clickup.com/t/86d3362u7"},
+  {id:"86d334ky1",n:"Hathi - Equity Mutual Funds year wise IRR",p:"high",a:[100873114],d:1779748200000,u:"https://app.clickup.com/t/86d334ky1"},
+  {id:"86d331nfd",n:"Daruwalla - Shares Purchase",p:"urgent",a:[100873114],d:1779661800000,u:"https://app.clickup.com/t/86d331nfd"},
+  {id:"86d331nby",n:"Daruwalla - Segment Activation",p:"high",a:[100873114],d:1779661800000,u:"https://app.clickup.com/t/86d331nby"},
+  {id:"86d32rh63",n:"Daga Family - Consolidate all the Dagas",p:"high",a:[100979918],d:1779661800000,u:"https://app.clickup.com/t/86d32rh63"},
+  {id:"86d32daqw",n:"BP Singh - Execute structured product exit",p:"urgent",a:[100979918,100873114],d:1779834600000,u:"https://app.clickup.com/t/86d32daqw"},
+  {id:"86d32daqr",n:"BP Singh - Confirm final redemption value of maturing structured product",p:"urgent",a:[7229060,100873114],d:1779661800000,u:"https://app.clickup.com/t/86d32daqr"},
+  {id:"86d32daqg",n:"BP Singh - Re-verify portfolio cash-flow figures",p:"high",a:[100979918],d:1779661800000,u:"https://app.clickup.com/t/86d32daqg"},
+  {id:"86d31tmfa",n:"Makhija - Transfer of securities",p:"urgent",a:[100873114],d:1779661800000,u:"https://app.clickup.com/t/86d31tmfa"},
+  {id:"86d31remx",n:"Shankar Unwinding - June",p:"urgent",a:[100873114],d:1779661800000,u:"https://app.clickup.com/t/86d31remx"},
+  {id:"86d31r26c",n:"Sushil Rathi - Realignment Plan",p:"high",a:[100873114],d:1779748200000,u:"https://app.clickup.com/t/86d31r26c"},
+  {id:"86d31r228",n:"Sushil Rathi - AIFAudit",p:"high",a:[100873114],d:1779661800000,u:"https://app.clickup.com/t/86d31r228"},
+  {id:"86d31nf89",n:"Shikha Srivatava - SP Redemption and Redeploy",p:"high",a:[100873114],d:1779661800000,u:"https://app.clickup.com/t/86d31nf89"},
+  {id:"86d318pkz",n:"Risabh Maiya Wife - Update KYC",p:"high",a:[100873114],d:1779834600000,u:"https://app.clickup.com/t/86d318pkz"},
+  {id:"86d314te3",n:"Rege - Redemption Documents to be prepared",p:"high",a:[100873114],d:1779661800000,u:"https://app.clickup.com/t/86d314te3"},
+  {id:"86d30wuu6",n:"Iyer - SBI Large and Mid Cap Fund",p:"high",a:[67267745],d:1779057000000,u:"https://app.clickup.com/t/86d30wuu6"},
+  {id:"86d30taxq",n:"Anurag - Meeting with Shweta Rajani",p:null,a:[100979918],d:null,u:"https://app.clickup.com/t/86d30taxq"},
+  {id:"86d30tap3",n:"Anvi - Trust Deed",p:"urgent",a:[100979918,7229060],d:1779834600000,u:"https://app.clickup.com/t/86d30tap3"},
+  {id:"86d30tam0",n:"Ashish - check portfolio stmt errors",p:"high",a:[100979918],d:1779661800000,u:"https://app.clickup.com/t/86d30tam0"},
+  {id:"86d30tajn",n:"Ashish - Purchase ARWL Shares",p:"urgent",a:[100979918],d:1779834600000,u:"https://app.clickup.com/t/86d30tajn"},
+  {id:"86d30tahj",n:"Ashish - Sell EMF and purchase International MF",p:"urgent",a:[100979918],d:1779748200000,u:"https://app.clickup.com/t/86d30tahj"},
+  {id:"86d30913r",n:"Pramanick - Send Soft copy of PAN application",p:"urgent",a:[],d:1778711400000,u:"https://app.clickup.com/t/86d30913r"},
+  {id:"86d2zw1nd",n:"Ojash - Lost folio Audit",p:"urgent",a:[7229060],d:1780353000000,u:"https://app.clickup.com/t/86d2zw1nd"},
+  {id:"86d2zdqfh",n:"Send Deal Note - Nipun",p:"urgent",a:[100979918],d:1779748200000,u:"https://app.clickup.com/t/86d2zdqfh"},
+  {id:"86d2zdq2b",n:"Anurag - TRUST draft",p:"high",a:[100979918],d:1779748200000,u:"https://app.clickup.com/t/86d2zdq2b"},
+  {id:"86d2z5rew",n:"Ashish - unpledge units & redeem",p:"urgent",a:[100979918],d:1779661800000,u:"https://app.clickup.com/t/86d2z5rew"},
+  {id:"86d2z5p75",n:"Nipun Pradhan - COB",p:"high",a:[100979918],d:1779834600000,u:"https://app.clickup.com/t/86d2z5p75"},
+  {id:"86d2z5nq1",n:"Pinak Demat A/c",p:"high",a:[100979918],d:1779748200000,u:"https://app.clickup.com/t/86d2z5nq1"},
+  {id:"86d2z5k9u",n:"Zenobia - Purchase of ARWL Shares",p:"urgent",a:[100979918],d:1779748200000,u:"https://app.clickup.com/t/86d2z5k9u"},
+  {id:"86d2z5jfc",n:"Zenobia Payout",p:"urgent",a:[100979918],d:1779661800000,u:"https://app.clickup.com/t/86d2z5jfc"},
+  {id:"86d2yuj1t",n:"Send nurture check-in to Pooja Aggarwal",p:"normal",a:[67267745],d:1779402600000,u:"https://app.clickup.com/t/86d2yuj1t"},
+  {id:"86d2yn1uj",n:"Nipun Pradhan WILL",p:"normal",a:[67267745],d:1778711400000,u:"https://app.clickup.com/t/86d2yn1uj"},
+  {id:"86d2yn1n3",n:"Nipun Pradhan COB",p:"normal",a:[67267745],d:1778538600000,u:"https://app.clickup.com/t/86d2yn1n3"},
+  {id:"86d2yn1fv",n:"Nipun Pradhan SIP 5 lakhs",p:"urgent",a:[100979918],d:1779834600000,u:"https://app.clickup.com/t/86d2yn1fv"},
+  {id:"86d2ymu09",n:"Apply for PAN - Pramanick TRUST",p:"high",a:[100979918],d:1780266600000,u:"https://app.clickup.com/t/86d2ymu09"},
+  {id:"86d2y25bz",n:"Brajesh Daga - 25 L Nuvama",p:"urgent",a:[100979918],d:1779748200000,u:"https://app.clickup.com/t/86d2y25bz"},
+  {id:"86d2xxg1q",n:"Darak - HDFC Bank Share transaction tax",p:null,a:[100979918],d:1779834600000,u:"https://app.clickup.com/t/86d2xxg1q"},
+  {id:"86d2xxfnv",n:"Nipun Pradhan 10 lakhs - 4 weeks",p:"urgent",a:[100979918],d:1779834600000,u:"https://app.clickup.com/t/86d2xxfnv"},
+  {id:"86d2xhn7p",n:"Send Shankar deal note",p:"urgent",a:[100979918],d:1779661800000,u:"https://app.clickup.com/t/86d2xhn7p"},
+  {id:"86d2x0ykw",n:"Shankar - Deal Note to be sent for Signature",p:"urgent",a:[100979918],d:1779661800000,u:"https://app.clickup.com/t/86d2x0ykw"},
+  {id:"86d2wavp9",n:"Nipun Pradhan",p:"normal",a:[7229060],d:1779834600000,u:"https://app.clickup.com/t/86d2wavp9"},
+  {id:"86d2updaj",n:"Sonawala - send beta and returns",p:"high",a:[100979918],d:1780007400000,u:"https://app.clickup.com/t/86d2updaj"},
+  {id:"86d2upd7r",n:"Sonawala - Trust Bank Account Details",p:"high",a:[100979918],d:1779748200000,u:"https://app.clickup.com/t/86d2upd7r"},
+  {id:"86d2upcxq",n:"Sonawala - COB",p:"high",a:[100979918],d:1779748200000,u:"https://app.clickup.com/t/86d2upcxq"},
+  {id:"86d2tkza4",n:"Anupam - Review the Funds",p:"normal",a:[100979918],d:1788388200000,u:"https://app.clickup.com/t/86d2tkza4"},
+  {id:"86d2tk9jb",n:"Nikesh - Tax Optimisition for ESOPs",p:"urgent",a:[7229060],d:1779661800000,u:"https://app.clickup.com/t/86d2tk9jb"},
+  {id:"86d2t3cmg",n:"Vinay Kargaonkar - COB",p:"high",a:[100979918],d:1780266600000,u:"https://app.clickup.com/t/86d2t3cmg"},
+  {id:"86d2rrzcn",n:"Anupam - Draft WILL",p:"normal",a:[100979918],d:1779661800000,u:"https://app.clickup.com/t/86d2rrzcn"},
+  {id:"86d2rrybv",n:"Varsha - Purchase ARWL Shares",p:"urgent",a:[100979918],d:1779661800000,u:"https://app.clickup.com/t/86d2rrybv"},
+  {id:"86d2r3xqc",n:"Pinak - Lost Folio Audit",p:"normal",a:[100979918],d:1780612200000,u:"https://app.clickup.com/t/86d2r3xqc"},
+  {id:"86d2qr4yn",n:"Atul Kamat - WILL",p:"high",a:[100873114],d:1779660000000,u:"https://app.clickup.com/t/86d2qr4yn"},
+  {id:"86d2qr4uq",n:"Atul Kamat - DE Audit",p:"high",a:[100873114],d:1779660000000,u:"https://app.clickup.com/t/86d2qr4uq"},
+  {id:"86d2qr4pn",n:"Atul Kamat - LF Audit",p:"high",a:[100873114],d:1779660000000,u:"https://app.clickup.com/t/86d2qr4pn"},
+  {id:"86d2qr4hf",n:"Atul Kamat",p:"high",a:[100873114],d:1779661800000,u:"https://app.clickup.com/t/86d2qr4hf"},
+  {id:"86d2puhar",n:"Rahul Kaul mutual fund COB",p:"high",a:[67267745],d:1779316200000,u:"https://app.clickup.com/t/86d2puhar"},
+  {id:"86d2ptwwr",n:"Demat Account - Manvendra Singh Wife",p:"urgent",a:[100979918],d:1779834600000,u:"https://app.clickup.com/t/86d2ptwwr"},
+  {id:"86d2pq0ww",n:"Asawa - exit from DE & UK shares",p:null,a:[100979918],d:null,u:"https://app.clickup.com/t/86d2pq0ww"},
+  {id:"86d2pp7by",n:"Kanchan - Tax Optimization Strategy for ESOPs",p:null,a:[100873114],d:1779400800000,u:"https://app.clickup.com/t/86d2pp7by"},
+  {id:"86d2pp761",n:"Kanchan - Lost Folio",p:null,a:[100873114],d:1779487200000,u:"https://app.clickup.com/t/86d2pp761"},
+  {id:"86d2pp2wh",n:"Sanjay - Add 2nd daughter as nominee",p:"high",a:[100873114],d:1779834600000,u:"https://app.clickup.com/t/86d2pp2wh"},
+  {id:"86d2pfn01",n:"Madhur Daswani - Realignment Plan",p:"normal",a:[100873114],d:1779748200000,u:"https://app.clickup.com/t/86d2pfn01"},
+  {id:"86d2ngy8p",n:"Sonawala - Infusion of 5cr",p:"high",a:[100979918],d:1780007400000,u:"https://app.clickup.com/t/86d2ngy8p"},
+  {id:"86d2mjpvg",n:"Saikat Roy Balance sheet",p:"high",a:[67267745],d:1778452200000,u:"https://app.clickup.com/t/86d2mjpvg"},
+  {id:"86d2mjhw4",n:"Benaifer - 1.5cr of Investment Plan",p:null,a:[100873114],d:1780266600000,u:"https://app.clickup.com/t/86d2mjhw4"},
+  {id:"86d2mjgvq",n:"Benaifer - Purchase of New SP 1.1cr",p:null,a:[100873114],d:1780610400000,u:"https://app.clickup.com/t/86d2mjgvq"},
+  {id:"86d2mjfne",n:"Benaifer - SIPs stop from Sept",p:null,a:[100873114],d:1788300000000,u:"https://app.clickup.com/t/86d2mjfne"},
+  {id:"86d2mjd7n",n:"Benaifer",p:"high",a:[100873114],d:1780266600000,u:"https://app.clickup.com/t/86d2mjd7n"},
+  {id:"86d2mg3qb",n:"Linkedin message to connection",p:"high",a:[67267745],d:1778106600000,u:"https://app.clickup.com/t/86d2mg3qb"},
+  {id:"86d2mg3fx",n:"75 Daily linkedin connection",p:"high",a:[67267745],d:1778106600000,u:"https://app.clickup.com/t/86d2mg3fx"},
+  {id:"86d2mg2uw",n:"10 Cold calls",p:"high",a:[67267745],d:1778106600000,u:"https://app.clickup.com/t/86d2mg2uw"},
+  {id:"86d2mg2e3",n:"Business Development - Daily Routine",p:"high",a:[67267745],d:1778106600000,u:"https://app.clickup.com/t/86d2mg2e3"},
+  {id:"86d2mfz25",n:"Vinay K - MF Audit re-visit",p:"high",a:[100979918],d:1779661800000,u:"https://app.clickup.com/t/86d2mfz25"},
+  {id:"86d2kuh8t",n:"Manu - 1L redemption every month for 3 months",p:"urgent",a:[100873114],d:1781217000000,u:"https://app.clickup.com/t/86d2kuh8t"},
+  {id:"86d2kue4d",n:"Send Netmob Data to Siddhartha",p:null,a:[100979918],d:1779921000000,u:"https://app.clickup.com/t/86d2kue4d"},
+  {id:"86d2ktt3v",n:"Asawa - WILL registration",p:"urgent",a:[100979918],d:1782340200000,u:"https://app.clickup.com/t/86d2ktt3v"},
+  {id:"86d2k6gjn",n:"Sumit Neogi - WILL",p:"urgent",a:[100979918],d:1779834600000,u:"https://app.clickup.com/t/86d2k6gjn"},
+  {id:"86d2jxjfc",n:"Dhritiman - NACH Exceeded",p:"urgent",a:[100873114],d:1782167400000,u:"https://app.clickup.com/t/86d2jxjfc"},
+  {id:"86d2j3fga",n:"BP Singh - Unwinding",p:"high",a:[100873114],d:1780007400000,u:"https://app.clickup.com/t/86d2j3fga"},
+  {id:"86d2hu90y",n:"Anvi - DE Audit",p:"high",a:[100873114],d:1779834600000,u:"https://app.clickup.com/t/86d2hu90y"},
+  {id:"86d2hu8x5",n:"Anvi WILLs draft to be sent",p:"high",a:[100873114],d:1779834600000,u:"https://app.clickup.com/t/86d2hu8x5"},
+  {id:"86d2bg3v0",n:"Income updation - Manu Kumar",p:"normal",a:[100979918],d:1780007400000,u:"https://app.clickup.com/t/86d2bg3v0"},
+  {id:"86d2ae696",n:"Chakraborty - Direct Equity Exit",p:"high",a:[100979918],d:null,u:"https://app.clickup.com/t/86d2ae696"},
+  {id:"86d29ufe6",n:"Kanchan Mishra",p:"high",a:[100873114],d:1779921000000,u:"https://app.clickup.com/t/86d29ufe6"},
+  {id:"86d29uf49",n:"Ashwin Jain - Address check and update",p:"high",a:[67267745],d:1779143400000,u:"https://app.clickup.com/t/86d29uf49"},
+  {id:"86d29q00y",n:"Hathi - Status on Lost Folios found",p:"high",a:[100873114],d:1779834600000,u:"https://app.clickup.com/t/86d29q00y"},
+  {id:"86d27e03f",n:"WILL - Sumit Neogi",p:"urgent",a:[7229060],d:1780007400000,u:"https://app.clickup.com/t/86d27e03f"},
+  {id:"86d26hbd2",n:"Monthly Reimbursement Bills",p:null,a:[100979918],d:1780007400000,u:"https://app.clickup.com/t/86d26hbd2"},
+  {id:"86d2661q8",n:"Ashwin Jain - EMAIL Update",p:"high",a:[100979918],d:1775773800000,u:"https://app.clickup.com/t/86d2661q8"},
+  {id:"86d250rez",n:"Mail Portfolio stmts",p:"urgent",a:[100979918],d:1780093800000,u:"https://app.clickup.com/t/86d250rez"},
+  // Page 2
+  {id:"86d224mw4",n:"Lost Folio - Rathi Family Trust",p:"high",a:[100873114],d:1780612200000,u:"https://app.clickup.com/t/86d224mw4"},
+  {id:"86d200dcj",n:"DE Audit - Pinak Pramanick",p:"normal",a:[100979918],d:1780612200000,u:"https://app.clickup.com/t/86d200dcj"},
+  {id:"86d1xjc1r",n:"Anurag Srivastava - Realignment",p:"high",a:[100873114],d:1780266600000,u:"https://app.clickup.com/t/86d1xjc1r"},
+  {id:"86d1w6dvf",n:"Pinak - Address to be updated",p:"high",a:[100873114],d:1780266600000,u:"https://app.clickup.com/t/86d1w6dvf"},
+  {id:"86d1v1nw2",n:"Benaifer Mom - Lost Folio",p:"high",a:[100873114],d:1780266600000,u:"https://app.clickup.com/t/86d1v1nw2"},
+  {id:"86d1udk5e",n:"Portfolio Statement - Mukesh Gupta",p:"urgent",a:[100873114],d:1780266600000,u:"https://app.clickup.com/t/86d1udk5e"},
+  {id:"86d1tz32b",n:"Kanchan - Calculate Capital Gains of ESOP",p:"high",a:[100873114],d:1779400800000,u:"https://app.clickup.com/t/86d1tz32b"},
+  {id:"86d1td0rk",n:"Neena Suvarna phy share certificate",p:"normal",a:[67267745],d:1777933800000,u:"https://app.clickup.com/t/86d1td0rk"},
+  {id:"86d1nv0jq",n:"Amit Bakshi weekly switch 10 lakhs",p:"urgent",a:[100979918],d:1780525800000,u:"https://app.clickup.com/t/86d1nv0jq"},
+  {id:"86d1nc35t",n:"Nirav - 3L SIP",p:"urgent",a:[67267745],d:1778020200000,u:"https://app.clickup.com/t/86d1nc35t"},
+  {id:"86d1n8pgz",n:"Sarda - Realignment",p:"high",a:[100979918],d:null,u:"https://app.clickup.com/t/86d1n8pgz"},
+  {id:"86d1mw8aa",n:"Manasi - COB",p:"normal",a:[100979918],d:null,u:"https://app.clickup.com/t/86d1mw8aa"},
+  {id:"86d1mpvna",n:"Minor to major - Isha for DSP",p:"normal",a:[100979918],d:1779661800000,u:"https://app.clickup.com/t/86d1mpvna"},
+  {id:"86d1mphc5",n:"Sonawala Insurance Audit",p:"high",a:[100979918],d:1779834600000,u:"https://app.clickup.com/t/86d1mphc5"},
+  {id:"86d1m9tcw",n:"Shivram Iyer HUF",p:"high",a:[67267745],d:1778797800000,u:"https://app.clickup.com/t/86d1m9tcw"},
+  {id:"86d1ky0ja",n:"Anand Mukherjee - Rs. 5 Lakh",p:"high",a:[100979918],d:1780439400000,u:"https://app.clickup.com/t/86d1ky0ja"},
+  {id:"86d1j232u",n:"Bhandari family SIP realignment",p:"high",a:[100979918],d:1779834600000,u:"https://app.clickup.com/t/86d1j232u"},
+  {id:"86d1fnyjx",n:"Chakraborthy Family - Lost folio Audit",p:"high",a:[100979918],d:null,u:"https://app.clickup.com/t/86d1fnyjx"},
+  {id:"86d1fbu8n",n:"Ojash Shah - Lost Folio schemes redemption",p:"high",a:[100873114],d:1780399800000,u:"https://app.clickup.com/t/86d1fbu8n"},
+  {id:"86d1fbq0f",n:"Rajesh Daga - Weekly Switch Rs. 5 Lakh",p:"urgent",a:[100979918],d:1779834600000,u:"https://app.clickup.com/t/86d1fbq0f"},
+  {id:"86d1dn956",n:"Insurance Audit - Kanchan Mishra",p:"urgent",a:[100873114],d:1779400800000,u:"https://app.clickup.com/t/86d1dn956"},
+  {id:"86d1ddb80",n:"Investment plan - Anu rana",p:"normal",a:[67267745],d:null,u:"https://app.clickup.com/t/86d1ddb80"},
+  {id:"86d1cfcmx",n:"Nikesh Prasad - Will",p:"high",a:[100873114],d:1779834600000,u:"https://app.clickup.com/t/86d1cfcmx"},
+  {id:"86d1ca2fa",n:"Sonawala DE audit",p:"normal",a:[100873114],d:1780612200000,u:"https://app.clickup.com/t/86d1ca2fa"},
+  {id:"86d1a2trb",n:"Manjula Bhatt - Transmission",p:"normal",a:[67267745],d:1778538600000,u:"https://app.clickup.com/t/86d1a2trb"},
+  {id:"86d19hjjk",n:"Yatin Singla - Tax Audit and ESOP",p:"normal",a:[100979918],d:1780007400000,u:"https://app.clickup.com/t/86d19hjjk"},
+  {id:"86d18x5dy",n:"Saroj Punjabi Transmission",p:"high",a:[67267745],d:1779143400000,u:"https://app.clickup.com/t/86d18x5dy"},
+  {id:"86d1848jc",n:"Venudhar Bhatt - Realignment Plan",p:"high",a:[100979918],d:1780007400000,u:"https://app.clickup.com/t/86d1848jc"},
+  {id:"86d177wxx",n:"Ajit - Remove IDBI Account in NRO and add HDFC",p:"normal",a:[67267745],d:1779229800000,u:"https://app.clickup.com/t/86d177wxx"},
+  {id:"86d173m88",n:"Nikesh Weekly Switch - Rs. 10L for 10 Weeks",p:"urgent",a:[100979918],d:1779834600000,u:"https://app.clickup.com/t/86d173m88"},
+  {id:"86d1678a6",n:"Naresh and Nandini Hingoranee - Realignment",p:"high",a:[100873114],d:1779748200000,u:"https://app.clickup.com/t/86d1678a6"},
+  {id:"86d15nxq1",n:"Saroj Punjabi - Realignment",p:"high",a:[100873114],d:1780612200000,u:"https://app.clickup.com/t/86d15nxq1"},
+  {id:"86d0xkjz3",n:"BP Singh - Realignment",p:"high",a:[100873114],d:1779748200000,u:"https://app.clickup.com/t/86d0xkjz3"},
+  {id:"86d0x368v",n:"Anand Malewar DEMAT transfer",p:"normal",a:[67267745],d:null,u:"https://app.clickup.com/t/86d0x368v"},
+  {id:"86d0w2w5q",n:"Nirav COB",p:"normal",a:[100979918],d:null,u:"https://app.clickup.com/t/86d0w2w5q"},
+  {id:"86d0vxrg5",n:"Menezes Family Realignment",p:"normal",a:[100873114],d:1780612200000,u:"https://app.clickup.com/t/86d0vxrg5"},
+  {id:"86d0vxfn0",n:"Hingo Relative - Transmission",p:"normal",a:[100979918],d:1779661800000,u:"https://app.clickup.com/t/86d0vxfn0"},
+  {id:"86d0up10q",n:"Portfolio Statements - To be sent",p:"high",a:[100873114],d:1780093800000,u:"https://app.clickup.com/t/86d0up10q"},
+  {id:"86d0umb39",n:"Resources folder - clean up",p:"normal",a:[100873114],d:null,u:"https://app.clickup.com/t/86d0umb39"},
+  {id:"86d0rmk0w",n:"Meetings to be updated on workstation",p:"high",a:[100979918],d:1779921000000,u:"https://app.clickup.com/t/86d0rmk0w"},
+  {id:"86d0qnqq9",n:"Anand malewar leverage calculator",p:"normal",a:[67267745],d:null,u:"https://app.clickup.com/t/86d0qnqq9"},
+  {id:"86d0kvaw6",n:"Bhandari",p:null,a:[100979918],d:1761604200000,u:"https://app.clickup.com/t/86d0kvaw6"},
+  {id:"86d0ktmy8",n:"Prasad Patwardhan",p:null,a:[100979918],d:1762295400000,u:"https://app.clickup.com/t/86d0ktmy8"},
+  {id:"86d0ktmvb",n:"Sudhir Prabhudesai",p:null,a:[100979918],d:1762209000000,u:"https://app.clickup.com/t/86d0ktmvb"},
+  {id:"86d0ktmt8",n:"Satish Ajane",p:null,a:[100979918],d:1762122600000,u:"https://app.clickup.com/t/86d0ktmt8"},
+  {id:"86d0ktmez",n:"Palyekar Family",p:null,a:[100979918],d:1760913000000,u:"https://app.clickup.com/t/86d0ktmez"},
+  {id:"86d0ktgqk",n:"Naresh Hingoranee",p:null,a:[100979918],d:1760135400000,u:"https://app.clickup.com/t/86d0ktgqk"},
+  {id:"86d0huxxg",n:"Linkedin - Job Change guy",p:"normal",a:[100873114],d:null,u:"https://app.clickup.com/t/86d0huxxg"},
+  {id:"86d0h9m58",n:"Chandrashekhar - DE Audit",p:"high",a:[67267745],d:null,u:"https://app.clickup.com/t/86d0h9m58"},
+  {id:"86d0eq69t",n:"Quarterly Leverage Reminder",p:"urgent",a:[100873114],d:1790980200000,u:"https://app.clickup.com/t/86d0eq69t"},
+  {id:"86d0d0pb3",n:"CoB - Shivram Iyer",p:"high",a:[67267745],d:1778538600000,u:"https://app.clickup.com/t/86d0d0pb3"},
+  {id:"86d0cbmaa",n:"Shivram Iyer cob",p:"high",a:[67267745],d:null,u:"https://app.clickup.com/t/86d0cbmaa"},
+  {id:"86d0cbkem",n:"Shivram Iyer - outside portfolio consolidation",p:null,a:[67267745],d:null,u:"https://app.clickup.com/t/86d0cbkem"},
+  {id:"86czyc2x1",n:"Leverage file - Every 15 days & AM Tracker",p:"high",a:[100979918],d:1779921000000,u:"https://app.clickup.com/t/86czyc2x1"},
+  {id:"86czp5atg",n:"Monthly client follow up",p:null,a:[7229060],d:1781735400000,u:"https://app.clickup.com/t/86czp5atg"},
+  {id:"86czp3m5m",n:"Social Media like Twitter, Instagram",p:"high",a:[67267745],d:null,u:"https://app.clickup.com/t/86czp3m5m"},
+  {id:"86czp3m23",n:"Business Standard",p:"high",a:[67267745],d:null,u:"https://app.clickup.com/t/86czp3m23"},
+  {id:"86czp3kvf",n:"Mint",p:"high",a:[7229060],d:null,u:"https://app.clickup.com/t/86czp3kvf"},
+  {id:"86czp3kra",n:"Feedly",p:"high",a:[7229060],d:null,u:"https://app.clickup.com/t/86czp3kra"},
+  {id:"86czmmw7r",n:"Vimal Rajpal 2 LAKHS WEEKLY SWITCH",p:"urgent",a:[67267745],d:1779229800000,u:"https://app.clickup.com/t/86czmmw7r"},
+  {id:"86czjjmat",n:"Practice Notes 30 minutes",p:"high",a:[7229060],d:1779402600000,u:"https://app.clickup.com/t/86czjjmat"},
+  {id:"86cz5jutz",n:"Palyekar Family Portfolio statement",p:null,a:[67267745],d:null,u:"https://app.clickup.com/t/86cz5jutz"},
+  {id:"86cyrczwv",n:"Add - One Reference to Reference tracker",p:"urgent",a:[100873114],d:null,u:"https://app.clickup.com/t/86cyrczwv"},
+  {id:"86cxc2v5f",n:"Update clients about the Leverage payment",p:"urgent",a:[100873114],d:1782858600000,u:"https://app.clickup.com/t/86cxc2v5f"},
+  {id:"86cx31q5j",n:"Jagdish darak monthly portfolio physical",p:"urgent",a:[100979918],d:1780266600000,u:"https://app.clickup.com/t/86cx31q5j"},
+  {id:"86cwzpmhz",n:"Iyer - Rs. 1.5 lakh Investment",p:"urgent",a:[67267745],d:1781476200000,u:"https://app.clickup.com/t/86cwzpmhz"},
+  {id:"86cwaa8mk",n:"10 Lakhs Weekly - Naresh Hingoranee",p:"urgent",a:[67267745],d:1779229800000,u:"https://app.clickup.com/t/86cwaa8mk"},
+  {id:"86cw36bf0",n:"Neena Suvarna - 20k redemption",p:"urgent",a:[67267745],d:1779748200000,u:"https://app.clickup.com/t/86cw36bf0"},
+  {id:"86cvj282c",n:"Satish Ajane monthly redemption - 3 Lakhs",p:"urgent",a:[100873114],d:1779661800000,u:"https://app.clickup.com/t/86cvj282c"},
+  {id:"86cvd5xhz",n:"Poojita Hathi 10 lakhs monthly redemption",p:"urgent",a:[100873114],d:1782081000000,u:"https://app.clickup.com/t/86cvd5xhz"},
+  {id:"86cv0zgpr",n:"Hathi Family Agenda",p:"high",a:[100873114],d:1779748200000,u:"https://app.clickup.com/t/86cv0zgpr"},
+  {id:"86cutm8x6",n:"Cynthia Physical PPMS",p:"urgent",a:[100979918],d:1780266600000,u:"https://app.clickup.com/t/86cutm8x6"},
+  {id:"86cuqnt0c",n:"Ninad ajane - money control update",p:null,a:[67267745],d:1779748200000,u:"https://app.clickup.com/t/86cuqnt0c"},
+  {id:"86cu8ka4d",n:"Portfolio Statement - Darak and Mahesh",p:"high",a:[67267745],d:null,u:"https://app.clickup.com/t/86cu8ka4d"},
+  {id:"85zu3fbrf",n:"Send Monthly Plan + Solution Finder",p:"urgent",a:[67267745],d:1779834600000,u:"https://app.clickup.com/t/85zu3fbrf"},
+  {id:"85ztt8vp3",n:"Send 20 Linked in Messages",p:"normal",a:[7229060],d:1779402600000,u:"https://app.clickup.com/t/85ztt8vp3"},
+  {id:"85ztpgzj9",n:"Birthday Gifts",p:"high",a:[100979918],d:1780007400000,u:"https://app.clickup.com/t/85ztpgzj9"},
+  {id:"85ztkqv1k",n:"Business Development - 10 Cold Call Connects",p:"normal",a:[67267745],d:null,u:"https://app.clickup.com/t/85ztkqv1k"},
+  {id:"85ztemp5e",n:"Cynthia Monthly Redemption 1 lakhs",p:"urgent",a:[100979918],d:1779748200000,u:"https://app.clickup.com/t/85ztemp5e"},
+  {id:"85zt94pgx",n:"Check OD Data",p:"urgent",a:[7229060],d:1779229800000,u:"https://app.clickup.com/t/85zt94pgx"},
+  // Deals list (901600290383)
+  {id:"86d30h511",n:"Shikha Srivastav - 35 Lakhs",p:"high",a:[7229060],d:1779402600000,u:"https://app.clickup.com/t/86d30h511"},
+  {id:"86d2w4puj",n:"Brajesh Daga - 25 lakhs",p:"high",a:[7229060],d:1779402600000,u:"https://app.clickup.com/t/86d2w4puj"},
+  {id:"86d2u3ttn",n:"Vindya Daswani - 34L SP",p:null,a:[7229060],d:1779921000000,u:"https://app.clickup.com/t/86d2u3ttn"},
+  {id:"86d2u3rx1",n:"Shankar - 59L SP",p:null,a:[7229060],d:1784586600000,u:"https://app.clickup.com/t/86d2u3rx1"},
+  {id:"86d2u3qyj",n:"Urmila Singh - 1.5 cr SP",p:null,a:[7229060],d:1779748200000,u:"https://app.clickup.com/t/86d2u3qyj"},
+  {id:"86d2ryf1p",n:"Sanjay Tiwari - 3cr",p:null,a:[7229060],d:1779402600000,u:"https://app.clickup.com/t/86d2ryf1p"},
+  {id:"86d2rrw28",n:"Makhija - 25L SP",p:null,a:[100979918],d:1777933800000,u:"https://app.clickup.com/t/86d2rrw28"},
+  {id:"86d2ngzc8",n:"Manoj Sonawala - Infusion of 5cr",p:"high",a:[7229060],d:1779143400000,u:"https://app.clickup.com/t/86d2ngzc8"},
+  {id:"86d2jg3va",n:"Nipun Pradhan - 50L EMF",p:null,a:[100873114],d:1777329000000,u:"https://app.clickup.com/t/86d2jg3va"},
+  {id:"86d2j39u0",n:"Ashwin Advani - 1.1 cr SP",p:null,a:[7229060],d:1786314600000,u:"https://app.clickup.com/t/86d2j39u0"},
+  {id:"86d1rmx6m",n:"Shruti V- 25L",p:null,a:[7229060],d:1779402600000,u:"https://app.clickup.com/t/86d1rmx6m"},
+  {id:"86d1n6mme",n:"Niathani-1.1 cr",p:null,a:[],d:1777933800000,u:"https://app.clickup.com/t/86d1n6mme"},
+  {id:"86d113507",n:"Ashish agarwal- 2 Cr",p:null,a:[7229060],d:1779402600000,u:"https://app.clickup.com/t/86d113507"},
+  {id:"86czf3k1u",n:"Benaifer - 1 Cr.",p:null,a:[7229060],d:1780266600000,u:"https://app.clickup.com/t/86czf3k1u"}
+];
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+const PC = {urgent:"#EF4444", high:"#F97316", normal:"#3B82F6", low:"#10B981", null:"#9CA3AF"};
+
+function pColor(p){ return PC[p] || PC.null; }
+
+function fmtDate(ms){
+  if(!ms) return "No due date";
+  return new Date(ms).toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric",timeZone:"Asia/Kolkata"});
+}
+
+function classify(d){
+  if(!d) return "nodate";
+  if(d < TODAY_START) return "overdue";
+  if(d <= TODAY_END)  return "today";
+  return "upcoming";
+}
+
+function overdueDays(d){
+  return Math.floor((TODAY_START - d) / 86400000);
+}
+
+function fmsToDur(ms){
+  if(!ms) return null;
+  const h = Math.floor(ms/3600000);
+  const m = Math.floor((ms%3600000)/60000);
+  if(h && m) return h+"h "+m+"m";
+  if(h) return h+"h";
+  return m+"m";
+}
+
+// Merge TE into tasks
+const TASKS = RAW.map(t => ({...t, te: TE[t.id] ?? null}));
+
+// ── STATS ─────────────────────────────────────────────────────────────────────
+const total     = TASKS.length;
+const todayTasks = TASKS.filter(t => classify(t.d)==="today");
+const overdueT  = TASKS.filter(t => classify(t.d)==="overdue");
+const unassigned= TASKS.filter(t => t.a.length === 0);
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function taskRow(t){
+  const cls = classify(t.d);
+  const od  = cls==="overdue" ? overdueDays(t.d) : 0;
+  const dateTxt = cls==="overdue"
+    ? `<span class="overdue-days">${od}d overdue</span> · ${fmtDate(t.d)}`
+    : cls==="today"
+    ? `<span style="color:#F59E0B;font-weight:600">Due today</span>`
+    : fmtDate(t.d);
+  const pLabel = t.p ? t.p.charAt(0).toUpperCase()+t.p.slice(1) : "–";
+  return `<a class="task-row" href="${t.u}" target="_blank" rel="noopener noreferrer">
+    <div class="priority-dot" style="background:${pColor(t.p)}"></div>
+    <div class="task-info">
+      <div class="task-name" title="${t.n.replace(/"/g,'&quot;')}">${t.n}</div>
+      <div class="task-meta">${dateTxt} <span style="color:${pColor(t.p)}">${pLabel}</span>${t.te?` · ⏱ ${fmsToDur(t.te)}`:''}${t.a.length>1?' · 👥 shared':''}</div>
+    </div>
+    <span class="task-link" title="Open in ClickUp">↗</span>
+  </a>`;
+}
+
+function accordion(id, label, tasks, defaultOpen, countClass){
+  if(!tasks.length) return '';
+  const open = defaultOpen && tasks.length > 0;
+  return `<div class="acc">
+    <button class="acc-btn ${open?'open':''}" onclick="toggle(this)" id="btn-${id}">
+      <span class="acc-label">${label}</span>
+      <span style="display:flex;align-items:center;gap:8px">
+        <span class="acc-count ${countClass||''}">${tasks.length}</span>
+        <span class="chevron">▼</span>
+      </span>
+    </button>
+    <div class="acc-body ${open?'open':''}" id="body-${id}">
+      ${tasks.map(taskRow).join('')}
+    </div>
+  </div>`;
+}
+
+function toggle(btn){
+  btn.classList.toggle('open');
+  const body = document.getElementById('body-'+btn.id.replace('btn-',''));
+  body.classList.toggle('open');
+}
+
+function priorityBar(tasks){
+  const counts = {urgent:0,high:0,normal:0,low:0,none:0};
+  tasks.forEach(t => { if(t.p) counts[t.p]=(counts[t.p]||0)+1; else counts.none++; });
+  const tot = tasks.length || 1;
+  const segs = ['urgent','high','normal','low','none'].map(k=>{
+    const pct = (counts[k]/tot*100).toFixed(1);
+    const col = k==='none' ? PC.null : PC[k];
+    return counts[k] ? `<span style="width:${pct}%;background:${col}"></span>` : '';
+  }).join('');
+  const legend = ['urgent','high','normal'].map(k=>counts[k]?
+    `<span style="--c:${PC[k]}"><span style="background:${PC[k]};width:8px;height:8px;border-radius:2px;display:inline-block;margin-right:4px"></span>${counts[k]} ${k}</span>`:''
+  ).filter(Boolean).join('');
+  return `<div class="pbar-row">
+    <label>Priority distribution</label>
+    <div class="pbar">${segs}</div>
+    <div class="pbar-legend">${legend}</div>
+  </div>`;
+}
+
+function userCard(user){
+  const myTasks  = TASKS.filter(t => t.a.includes(user.id));
+  const today    = myTasks.filter(t => classify(t.d)==="today").sort((a,b)=>a.d-b.d);
+  const overdue  = myTasks.filter(t => classify(t.d)==="overdue").sort((a,b)=>a.d-b.d);
+  const upcoming = myTasks.filter(t => classify(t.d)==="upcoming").sort((a,b)=>a.d-b.d);
+  const nodate   = myTasks.filter(t => classify(t.d)==="nodate");
+
+  const teSum   = today.reduce((s,t)=>s+(t.te||0),0);
+  const noEstToday = today.filter(t=>t.te===null).length;
+  const estTxt  = teSum ? fmsToDur(teSum) : '—';
+
+  const uid = user.id;
+  return `<div class="card">
+    <div class="card-header">
+      <div class="avatar" style="background:${user.color}">${user.initials}</div>
+      <div class="card-title">
+        <h2>${user.name}</h2>
+        <p>${myTasks.length} tasks assigned${overdue.length?' · '+overdue.length+' overdue':''}</p>
+      </div>
+    </div>
+    <div class="card-chips">
+      <span class="chip chip-total">📋 ${myTasks.length} total</span>
+      <span class="chip chip-today">🌅 ${today.length} due today</span>
+      <span class="chip chip-overdue">🔴 ${overdue.length} overdue</span>
+    </div>
+    <div class="est-row">
+      <span>⏱ Est. effort <span style="font-size:0.7rem;color:#94A3B8">(today's tasks)</span>:</span>
+      <span class="est-val">${estTxt}</span>
+      ${teSum ? `<span class="tooltip" data-tip="${noEstToday} of today's ${today.length} tasks have no estimate set">ℹ️</span>` : `<span style="font-size:0.75rem">(${today.length ? noEstToday+' tasks — no estimates set' : 'no tasks due today'})</span>`}
+    </div>
+    ${priorityBar(myTasks)}
+    ${accordion('today-'+uid,'🌅 Due Today',today,true,'amber')}
+    ${accordion('over-'+uid,'🔴 Overdue',overdue,overdue.length<=8,'red')}
+    ${accordion('up-'+uid,'📅 Upcoming',upcoming,false,'')}
+    ${nodate.length ? accordion('nd-'+uid,'📌 No Due Date',nodate,false,'') : ''}
+  </div>`;
+}
+
+function buildUnassigned(){
+  if(!unassigned.length) return '';
+  return `<div class="unassigned-section">
+    <div class="unassigned-card">
+      <div class="unassigned-header">
+        <div style="font-size:1.5rem">⚠️</div>
+        <div>
+          <h3>Unassigned Tasks — Action Required</h3>
+          <p>${unassigned.length} task${unassigned.length>1?'s':''} with no assignee</p>
+        </div>
+      </div>
+      ${unassigned.map(taskRow).join('')}
+    </div>
+  </div>`;
+}
+
+function render(){
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <div class="header">
+      <div class="header-left">
+        <h1>Work To Do's Dashboard</h1>
+        <p>Rathi Financial · Work To Do's &amp; Deals · Live snapshot</p>
+      </div>
+      <div class="header-right">
+        <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙 Dark mode</button>
+        <div class="date">${TODAY_LABEL}</div>
+        <div class="total-badge">${total} total tasks</div>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat-pill total"><div class="num">${total}</div><div class="lbl">Total Tasks</div></div>
+      <div class="stat-pill today"><div class="num">${todayTasks.length}</div><div class="lbl">Due Today</div></div>
+      <div class="stat-pill over"><div class="num">${overdueT.length}</div><div class="lbl">Overdue</div></div>
+      <div class="stat-pill unassigned"><div class="num">${unassigned.length}</div><div class="lbl">Unassigned</div></div>
+    </div>
+
+    <div class="grid">
+      ${USERS.map(userCard).join('')}
+    </div>
+
+    ${buildUnassigned()}
+  `;
+}
+
+// ── DARK MODE ─────────────────────────────────────────────────────────────────
+function applyTheme(dark){
+  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+  const btn = document.getElementById('themeBtn');
+  if(btn) btn.textContent = dark ? '☀️ Light mode' : '🌙 Dark mode';
+}
+function toggleTheme(){
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  localStorage.setItem('theme', isDark ? 'light' : 'dark');
+  applyTheme(!isDark);
+}
+// Apply saved preference immediately
+applyTheme(localStorage.getItem('theme') === 'dark');
+
+render();
+</script>
+</body>
+</html>
