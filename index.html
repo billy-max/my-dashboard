@@ -134,9 +134,9 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 <div id="app"></div>
 <script>
 // ── CONSTANTS ─────────────────────────────────────────────────────────────────
-const TODAY_START = 1779647400000; // 2026-05-25 00:00 IST
-const TODAY_END   = 1779733799999; // 2026-05-25 23:59:59 IST
-const TODAY_LABEL = "Monday, 25 May 2026";
+const TODAY_START = 1779733800000; // 2026-05-26 00:00 IST
+const TODAY_END   = 1779820199999; // 2026-05-26 23:59:59 IST
+const TODAY_LABEL = "Tuesday, 26 May 2026";
 
 const USERS = [
   {id:100873114, name:"Sakshi Timbadia", initials:"ST", color:"#EC4899"},
@@ -145,15 +145,11 @@ const USERS = [
   {id:7229060,   name:"D Das",           initials:"DD", color:"#6366F1"},
 ];
 
-const TE = { // time_estimate in ms — freshly fetched 2026-05-25
+const TE = { // time_estimate in ms — freshly fetched 2026-05-26
   // ── Due Today (tasks with estimates set) ───────────────
-  "86d34469e":900000,   // 15m
   "86d3445fr":900000,   // 15m
   "86d33xv6a":600000,   // 10m
-  "86d33qmgn":300000,   // 5m
   "86d338t0x":900000,   // 15m
-  "86d331nfd":900000,   // 15m
-  "86d331nby":1800000,  // 30m
   "86d31tmfa":3600000,  // 1h
   "86d31remx":3600000,  // 1h
   "86d31nf89":1800000,  // 30m
@@ -162,11 +158,7 @@ const TE = { // time_estimate in ms — freshly fetched 2026-05-25
   "86d2z5rew":7200000,  // 2h
   "86d2z5k9u":1200000,  // 20m
   "86d2x0ykw":1200000,  // 20m
-  "86d2tk9jb":1200000,  // 20m
   "86d2rrybv":900000,   // 15m
-  "86d2qr4yn":600000,   // 10m
-  "86d2qr4uq":600000,   // 10m
-  "86d2qr4pn":600000,   // 10m
   "86d2mfz25":900000,   // 15m
   "86d1mpvna":900000,   // 15m
   "86d1678a6":900000,   // 15m
