@@ -52,7 +52,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .theme-toggle:hover { background: rgba(255,255,255,0.22); }
 
 /* STATS STRIP */
-.stats { display: flex; gap: 12px; padding: 20px 32px; flex-wrap: wrap; }
+
 .stat-pill { background: var(--card); border-radius: 12px; padding: 14px 22px; box-shadow: var(--shadow); flex: 1; min-width: 140px; text-align: center; border: 1px solid var(--border); transition: background .25s, border-color .25s; }
 .stat-pill .num  { font-size: 1.8rem; font-weight: 800; line-height: 1; }
 .stat-pill .lbl  { font-size: 0.75rem; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: .5px; }
@@ -124,7 +124,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 /* RESPONSIVE */
 @media (max-width: 600px) {
   .header { padding: 20px 16px; }
-  .stats  { padding: 14px 16px; }
   .grid   { grid-template-columns: 1fr; padding: 0 16px 24px; }
   .unassigned-section { margin: 0 16px 24px; }
 }
@@ -155,6 +154,18 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .crm-hm-num{font-size:2rem;font-weight:800;color:#fff;line-height:1;}
 .crm-hm-sub{font-size:0.72rem;color:#94A3B8;margin-top:3px;}
 .crm-hm-card.danger .crm-hm-num{color:#FCA5A5;}
+/* Two-section stats strip */
+.stats{display:flex;gap:0;padding:20px 32px;flex-wrap:wrap;align-items:stretch;}
+.stats-group{display:flex;flex-direction:column;gap:8px;flex:1;}
+.stats-group-label{font-size:0.65rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:.8px;color:var(--muted);padding:0 4px;}
+.stats-pills{display:flex;gap:12px;flex:1;}
+.stats-pills .stat-pill{flex:1;min-width:110px;}
+.stats-sep{width:1px;background:var(--border);margin:0 20px;align-self:stretch;}
+@media(max-width:600px){
+  .stats{flex-direction:column;padding:14px 16px;}
+  .stats-sep{width:100%;height:1px;margin:12px 0;}
+}
 </style>
 </head>
 <body>
@@ -549,36 +560,35 @@ function render(){
   const app = document.getElementById('app');
   app.innerHTML = `
     <div class="header">
-      <div class="header-row1">
-        <div class="header-left">
-          <h1>Work To Do's Dashboard</h1>
-          <p>Rathi Financial · Work To Do's &amp; Deals · Live snapshot</p>
-        </div>
-        <div class="header-right">
-          <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙 Dark mode</button>
-          <div class="date">${TODAY_LABEL} &nbsp;·&nbsp; Updated ${UPDATE_TIME}</div>
-          <div class="total-badge">${total} total tasks</div>
-        </div>
+      <div class="header-left">
+        <h1>Work To Do's Dashboard</h1>
+        <p>Rathi Financial · Work To Do's &amp; Deals · Live snapshot</p>
       </div>
-      <div class="crm-hm-row">
-        <div class="crm-hm-card">
-          <div class="crm-hm-label">CRM leads</div>
-          <div class="crm-hm-num">${CRM_TOTAL_LEADS}</div>
-          <div class="crm-hm-sub">active pipeline</div>
-        </div>
-        <div class="crm-hm-card danger">
-          <div class="crm-hm-label">CRM overdue</div>
-          <div class="crm-hm-num">${CRM_OVERDUE_TOTAL}</div>
-          <div class="crm-hm-sub">follow-ups missed</div>
-        </div>
+      <div class="header-right">
+        <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙 Dark mode</button>
+        <div class="date">${TODAY_LABEL} &nbsp;·&nbsp; Updated ${UPDATE_TIME}</div>
+        <div class="total-badge">${total} total tasks</div>
       </div>
     </div>
 
     <div class="stats">
-      <div class="stat-pill total"><div class="num">${total}</div><div class="lbl">Total Tasks</div></div>
-      <div class="stat-pill today"><div class="num">${todayTasks.length}</div><div class="lbl">Due Today</div></div>
-      <div class="stat-pill over"><div class="num">${overdueT.length}</div><div class="lbl">Overdue</div></div>
-      <div class="stat-pill unassigned"><div class="num">${unassigned.length}</div><div class="lbl">Unassigned</div></div>
+      <div class="stats-group">
+        <div class="stats-group-label">ClickUp</div>
+        <div class="stats-pills">
+          <div class="stat-pill total"><div class="num">${total}</div><div class="lbl">Total Tasks</div></div>
+          <div class="stat-pill today"><div class="num">${todayTasks.length}</div><div class="lbl">Due Today</div></div>
+          <div class="stat-pill over"><div class="num">${overdueT.length}</div><div class="lbl">Overdue</div></div>
+          <div class="stat-pill unassigned"><div class="num">${unassigned.length}</div><div class="lbl">Unassigned</div></div>
+        </div>
+      </div>
+      <div class="stats-sep"></div>
+      <div class="stats-group">
+        <div class="stats-group-label">Vayu CRM</div>
+        <div class="stats-pills">
+          <div class="stat-pill crm-leads"><div class="num">${CRM_TOTAL_LEADS}</div><div class="lbl">Active Pipeline</div></div>
+          <div class="stat-pill crm-over"><div class="num">${CRM_OVERDUE_TOTAL}</div><div class="lbl">Overdue Follow-ups</div></div>
+        </div>
+      </div>
     </div>
 
     ${pipelineStrip()}    <div class="grid">
