@@ -177,31 +177,33 @@ const TE = {}; // time_estimate in ms — cleared pending re-fetch
 
 // ── VAYU CRM DATA ──────────────────────────────────────────────────────────
 const CRM_PIPELINE=[
-  {label:'Introduction',   count:1, color:'#93C5FD'},
-  {label:'Mtg Requested',  count:1, color:'#60A5FA'},
+  {label:'Introduction', count:1, color:'#93C5FD'},
+  {label:'Mtg Requested', count:1, color:'#60A5FA'},
   {label:'Intro Mtg Done', count:7, color:'#3B82F6'},
-  {label:'WBS/FDP',        count:0, color:'#2563EB'},
-  {label:'Onboarding',     count:1, color:'#10B981'},
-  {label:'Active Client',  count:0, color:'#059669'},
+  {label:'WBS/FDP', count:0, color:'#2563EB'},
+  {label:'Onboarding', count:1, color:'#10B981'},
+  {label:'Active Client', count:0, color:'#059669'},
 ];
 const CRM_TOTAL_LEADS=10;
 const CRM_OVERDUE_TOTAL=9;
 const CRM_OVERDUE={
   67267745:[
-    {name:'Vipul Khandelwal', co:'Gaurang Environmental',  type:'WHATSAPP'},
-    {name:'Aijnkya Medhe',    co:'Myntra',                 type:'CALL'},
-    {name:'Mithun Mahendra',  co:'Axis Bank Bangalore',    type:'CALL'},
-    {name:'Yash Daga',        co:'Fiberboard Advertising', type:'LINKEDIN'},
-    {name:'Bhaskar Nair',     co:'Shipping company',       type:'CALL'},
-    {name:'Atul Nagpal',      co:'Catalytic Minds',        type:'CALL'},
-    {name:'Fakhruddin',       co:'',                       type:'WHATSAPP'},
+    {name:'Vipul Khandelwal', co:'Gaurang Environmental', type:'WHATSAPP'},
+    {name:'Aijnkya Medhe', co:'Myntra', type:'CALL'},
+    {name:'Mithun Mahendra', co:'Axis Bank Bangalore', type:'CALL'},
+    {name:'Yash Daga', co:'Fiberboard Advertising', type:'LINKEDIN'},
+    {name:'Bhaskar Nair', co:'Shipping Company', type:'CALL'},
+    {name:'Atul Nagpal', co:'Catalytic Minds', type:'CALL'},
+    {name:'Fakhruddin', co:'', type:'WHATSAPP'},
   ],
   7229060:[
     {name:'Nitin Agarwal', co:'Head of Marketing, Bhanzu', type:'CALL'},
-    {name:'Sanjay Tiwari', co:'Retired (Onboarding)',      type:'CALL'},
+    {name:'Sanjay Tiwari', co:'Retired', type:'CALL'},
   ],
-  100979918:[],
-  100873114:[],
+  100979918:[
+  ],
+  100873114:[
+  ],
 };
 // ── TASKS (161 from Work To do's + 9 from Deals = 170 open tasks) ──────────
 const RAW = [
