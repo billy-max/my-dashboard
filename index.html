@@ -164,6 +164,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 const TODAY_START = 1782585000000; // 2026-06-28 00:00 IST
 const TODAY_END   = 1782671399999; // 2026-06-28 23:59:59 IST
 const TODAY_LABEL = "Sunday, 28 June 2026";
+const UPDATE_TIME = "3:36 PM IST";
 
 const USERS = [
   {id:100873114, name:"Sakshi Timbadia", initials:"ST", color:"#EC4899"},
@@ -553,7 +554,7 @@ function render(){
         </div>
         <div class="header-right">
           <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙 Dark mode</button>
-          <div class="date">${TODAY_LABEL}</div>
+          <div class="date">${TODAY_LABEL} &nbsp;·&nbsp; Updated ${UPDATE_TIME}</div>
           <div class="total-badge">${total} total tasks</div>
         </div>
       </div>
