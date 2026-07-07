@@ -172,10 +172,10 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 <div id="app"></div>
 <script>
 // ── CONSTANTS ─────────────────────────────────────────────────────────────────
-const TODAY_START = 1783276200000; // 2026-07-06 00:00 IST
-const TODAY_END   = 1783362599999; // 2026-07-06 23:59:59 IST
-const TODAY_LABEL = "Monday, 6 July 2026";
-const UPDATE_TIME = "7:30 PM IST";
+const TODAY_START = 1783362600000; // 2026-07-07 00:00 IST
+const TODAY_END   = 1783448999999; // 2026-07-07 23:59:59 IST
+const TODAY_LABEL = "Tuesday, 7 July 2026";
+const UPDATE_TIME = "10:02 AM IST";
 
 const USERS = [
   {id:100873114, name:"Sakshi Timbadia", initials:"ST", color:"#EC4899"},
@@ -184,7 +184,7 @@ const USERS = [
   {id:7229060,   name:"D Das",           initials:"DD", color:"#6366F1"},
 ];
 
-const TE = {}; // time_estimate in ms — cleared pending re-fetch // time_estimate in ms — cleared pending re-fetch // time_estimate in ms — cleared pending re-fetch // time_estimate in ms — cleared pending re-fetch
+const TE = {}; // time_estimate in ms — cleared pending re-fetch // time_estimate in ms — cleared pending re-fetch // time_estimate in ms — cleared pending re-fetch // time_estimate in ms — cleared pending re-fetch // time_estimate in ms — cleared pending re-fetch
 
 // ── VAYU CRM DATA ──────────────────────────────────────────────────────────
 const CRM_PIPELINE=[
@@ -196,41 +196,43 @@ const CRM_PIPELINE=[
   {label:'Active Client', count:0, color:'#059669'},
 ];
 const CRM_TOTAL_LEADS=14;
-const CRM_OVERDUE_TOTAL=0;
+const CRM_OVERDUE_TOTAL=1;
 const CRM_OVERDUE={
   67267745:[],
   7229060:[],
-  100979918:[],
+  100979918:[
+    {name:'JAYESH BHAVANJI SHETHIA', co:'Cold call', type:'CALL'},
+  ],
   100873114:[],
 };
 // ── TASKS (154 from Work To do's + 10 from Deals = 164 open tasks) ──────────
 const RAW = [
   // Work To do's list (900200899794) — open/to-do only
-  {id:"86d3kkwju",n:"Anvi Gandhi - Send Minutes of Meeting",p:"high",a:[100979918,100873114],d:1783290600000,u:"https://app.clickup.com/t/86d3kkwju"},
-  {id:"86d3kkwh3",n:"Anvi Gandhi - Prepare estate organizer Excel",p:"high",a:[100979918,100873114],d:1783290600000,u:"https://app.clickup.com/t/86d3kkwh3"},
-  {id:"86d3kkwef",n:"Anvi Gandhi - Set up recurring first-Monday-of-month review at 11 AM",p:"high",a:[100979918,100873114],d:1783290600000,u:"https://app.clickup.com/t/86d3kkwef"},
-  {id:"86d3kkwbp",n:"Anvi Gandhi - Send will and trust drafts",p:"high",a:[100979918,100873114],d:1783290600000,u:"https://app.clickup.com/t/86d3kkwbp"},
+  {id:"86d3kkwju",n:"Anvi Gandhi - Send Minutes of Meeting",p:"high",a:[100979918],d:1783290600000,u:"https://app.clickup.com/t/86d3kkwju"},
+  {id:"86d3kkwh3",n:"Anvi Gandhi - Prepare estate organizer Excel",p:"high",a:[100979918],d:1783290600000,u:"https://app.clickup.com/t/86d3kkwh3"},
+  {id:"86d3kkwef",n:"Anvi Gandhi - Set up recurring first-Monday-of-month review at 11 AM",p:"high",a:[100979918],d:1783290600000,u:"https://app.clickup.com/t/86d3kkwef"},
+  {id:"86d3kkwbp",n:"Anvi Gandhi - Send will and trust drafts",p:"high",a:[100979918],d:1783290600000,u:"https://app.clickup.com/t/86d3kkwbp"},
   {id:"86d3kkw9h",n:"Anvi Gandhi - Send Excel portfolio statement",p:"high",a:[7229060],d:1783290600000,u:"https://app.clickup.com/t/86d3kkw9h"},
   {id:"86d3kkw7d",n:"Anvi Gandhi - Send lost folio change-of-broker paperwork",p:"high",a:[7229060],d:1783290600000,u:"https://app.clickup.com/t/86d3kkw7d"},
   {id:"86d3kkw4p",n:"Anvi Gandhi - Send quartile analysis and fund consolidation proposal",p:"high",a:[7229060],d:1783290600000,u:"https://app.clickup.com/t/86d3kkw4p"},
   {id:"86d3kkd99",n:"Book Anvi Recurring Meeting",p:"high",a:[100979918],d:1783377000000,u:"https://app.clickup.com/t/86d3kkd99"},
   {id:"86d3kkd1b",n:"Anvi Gandhi - COB",p:"high",a:[100979918],d:1783377000000,u:"https://app.clickup.com/t/86d3kkd1b"},
   {id:"86d3kkazq",n:"Send Dispute form to ICICI",p:"urgent",a:[7229060],d:1783377000000,u:"https://app.clickup.com/t/86d3kkazq"},
-  {id:"86d3kghhy",n:"Anvi Minutes of the meeting",p:null,a:[100979918],d:1783290600000,u:"https://app.clickup.com/t/86d3kghhy"},
+  {id:"86d3kghhy",n:"Anvi Minutes of the meeting",p:null,a:[100979918],d:1783377000000,u:"https://app.clickup.com/t/86d3kghhy"},
   {id:"86d3kenw1",n:"Anshul Asawa - Insurance Query",p:"urgent",a:[100873114],d:1783290600000,u:"https://app.clickup.com/t/86d3kenw1"},
   {id:"86d3kdh97",n:"Isha - Purchase 3L",p:"high",a:[100873114],d:1783377000000,u:"https://app.clickup.com/t/86d3kdh97"},
-  {id:"86d3kbpu2",n:"Prepare Excel Portfolio for Anvi",p:"high",a:[100979918],d:1783290600000,u:"https://app.clickup.com/t/86d3kbpu2"},
+  {id:"86d3kbpu2",n:"Prepare Excel Portfolio for Anvi",p:"high",a:[100979918],d:1783377000000,u:"https://app.clickup.com/t/86d3kbpu2"},
   {id:"86d3k192k",n:"Saikat Roy - Send estate planning Excel sheet",p:"high",a:[67267745],d:1783549800000,u:"https://app.clickup.com/t/86d3k192k"},
   {id:"86d3jxphp",n:"Seema Wagle - Send Minutes of Meeting",p:"high",a:[67267745],d:null,u:"https://app.clickup.com/t/86d3jxphp"},
   {id:"86d3jxpgp",n:"Seema Wagle - Advise on mutual fund transfer method",p:"high",a:[67267745],d:1783290600000,u:"https://app.clickup.com/t/86d3jxpgp"},
-  {id:"86d3jk0na",n:"Varsha Morani - Send Minutes of Meeting",p:"high",a:[100979918],d:1783290600000,u:"https://app.clickup.com/t/86d3jk0na"},
+  {id:"86d3jk0na",n:"Varsha Morani - Send Minutes of Meeting",p:"high",a:[100979918],d:1783377000000,u:"https://app.clickup.com/t/86d3jk0na"},
   {id:"86d3jk0mh",n:"Varsha Morani - Schedule follow-up review in two months",p:"high",a:[100979918],d:1784068200000,u:"https://app.clickup.com/t/86d3jk0mh"},
   {id:"86d3jk0m2",n:"Varsha Morani - Investigate and complete outstanding weekly switches",p:"high",a:[7229060],d:1783290600000,u:"https://app.clickup.com/t/86d3jk0m2"},
   {id:"86d3hu8k3",n:"Harish Panpaliya - Latest credit risk presenattion",p:"high",a:[100873114],d:1783377000000,u:"https://app.clickup.com/t/86d3hu8k3"},
   {id:"86d3hkuy8",n:"Suvarna Shah - SP to be exited",p:"high",a:[100873114],d:1785796200000,u:"https://app.clickup.com/t/86d3hkuy8"},
   {id:"86d3hkcf9",n:"Rajesh Daga - SP to be exited",p:"urgent",a:[100873114],d:1783377000000,u:"https://app.clickup.com/t/86d3hkcf9"},
   {id:"86d3h8e6a",n:"Sonawala Meeting",p:"high",a:[100979918],d:1783377000000,u:"https://app.clickup.com/t/86d3h8e6a"},
-  {id:"86d3h8dyf",n:"Zenobia Portfolio Statement",p:"high",a:[100979918],d:1783290600000,u:"https://app.clickup.com/t/86d3h8dyf"},
+  {id:"86d3h8dyf",n:"Zenobia Portfolio Statement",p:"high",a:[100979918],d:1783377000000,u:"https://app.clickup.com/t/86d3h8dyf"},
   {id:"86d3gmpwq",n:"Nipun Pradhan - Investment Plan",p:"high",a:[100873114],d:1783377000000,u:"https://app.clickup.com/t/86d3gmpwq"},
   {id:"86d3fzzrw",n:"Nipun Pradhan - Send COB Documnets",p:"high",a:[100979918],d:1783377000000,u:"https://app.clickup.com/t/86d3fzzrw"},
   {id:"86d3fzj94",n:"Sumit Neogi - DE Audit",p:"normal",a:[100873114],d:1783377000000,u:"https://app.clickup.com/t/86d3fzj94"},
@@ -310,7 +312,7 @@ const RAW = [
   {id:"86d2bg3v0",n:"Income updation - Manu Kumar",p:"normal",a:[100979918],d:1785105000000,u:"https://app.clickup.com/t/86d2bg3v0"},
   {id:"86d29ufe6",n:"Kanchan Mishra",p:"normal",a:[100873114],d:1783549800000,u:"https://app.clickup.com/t/86d29ufe6"},
   {id:"86d29q00y",n:"Hathi - Status on Lost Folios found",p:"high",a:[100873114],d:1783636200000,u:"https://app.clickup.com/t/86d29q00y"},
-  {id:"86d26hbd2",n:"Monthly Reimbursement Bills",p:null,a:[100979918],d:1783290600000,u:"https://app.clickup.com/t/86d26hbd2"},
+  {id:"86d26hbd2",n:"Monthly Reimbursement Bills",p:null,a:[100979918],d:1783377000000,u:"https://app.clickup.com/t/86d26hbd2"},
   {id:"86d250rez",n:"Mail Portfolio stmts",p:"urgent",a:[100979918],d:1785537000000,u:"https://app.clickup.com/t/86d250rez"},
   {id:"86d224mw4",n:"Lost Folio - Rathi Family Trust",p:"normal",a:[100873114],d:1783549800000,u:"https://app.clickup.com/t/86d224mw4"},
   {id:"86d200dcj",n:"DE Audit - Pinak Pramanick",p:"normal",a:[100979918],d:1783636200000,u:"https://app.clickup.com/t/86d200dcj"},
