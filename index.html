@@ -172,10 +172,10 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 <div id="app"></div>
 <script>
 // ── CONSTANTS ─────────────────────────────────────────────────────────────────
-const TODAY_START = 1784313000000; // 2026-07-18 00:00 IST
-const TODAY_END   = 1784399399999; // 2026-07-18 23:59:59 IST
-const TODAY_LABEL = "Saturday, 18 July 2026";
-const UPDATE_TIME = "6:07 PM IST";
+const TODAY_START = 1784399400000; // 2026-07-19 00:00 IST
+const TODAY_END   = 1784485799999; // 2026-07-19 23:59:59 IST
+const TODAY_LABEL = "Sunday, 19 July 2026";
+const UPDATE_TIME = "10:29 AM IST";
 
 const USERS = [
   {id:100873114, name:"Sakshi Timbadia", initials:"ST", color:"#EC4899"},
@@ -184,7 +184,7 @@ const USERS = [
   {id:7229060,   name:"D Das",           initials:"DD", color:"#6366F1"},
 ];
 
-const TE = {}; // time_estimate in ms — cleared pending re-fetch // time_estimate in ms — cleared pending re-fetch // time_estimate in ms — cleared pending re-fetch // time_estimate in ms — cleared pending re-fetch // time_estimate in ms — cleared pending re-fetch // time_estimate in ms — cleared pending re-fetch // time_estimate in ms — cleared pending re-fetch // time_estimate in ms — cleared pending re-fetch // time_estimate in ms — cleared pending re-fetch // time_estimate in ms — cleared pending re-fetch
+const TE = {}; // time_estimate in ms — cleared pending re-fetch // time_estimate in ms — cleared pending re-fetch // time_estimate in ms — cleared pending re-fetch // time_estimate in ms — cleared pending re-fetch // time_estimate in ms — cleared pending re-fetch // time_estimate in ms — cleared pending re-fetch // time_estimate in ms — cleared pending re-fetch // time_estimate in ms — cleared pending re-fetch // time_estimate in ms — cleared pending re-fetch // time_estimate in ms — cleared pending re-fetch // time_estimate in ms — cleared pending re-fetch
 
 // ── VAYU CRM DATA ──────────────────────────────────────────────────────────
 const CRM_PIPELINE=[
@@ -227,9 +227,29 @@ const CRM_OVERDUE={
     {name:'MAHIMA AMAN SARAF', co:'Cold call', type:'CALL'},
   ],
 };
-// ── TASKS (154 from Work To do's + 11 from Deals = 165 open tasks) ──────────
+// ── TASKS (174 from Work To do's + 12 from Deals = 186 open tasks) ──────────
 const RAW = [
   // Work To do's list (900200899794) — open/to-do only
+  {id:"86d3r1aug",n:"Ojash - Direct Equity Query",p:"high",a:[100873114],d:1784500200000,u:"https://app.clickup.com/t/86d3r1aug"},
+  {id:"86d3qzywj",n:"Shah Family - Send Minutes of Meeting",p:"high",a:[100873114],d:1784327400000,u:"https://app.clickup.com/t/86d3qzywj"},
+  {id:"86d3qzyvw",n:"Shah Family - Obtain capital gains statement from fund house",p:"high",a:[100873114],d:1784327400000,u:"https://app.clickup.com/t/86d3qzyvw"},
+  {id:"86d3qzyvg",n:"Shah Family - Explore dollar-denominated FCNR / GIFT City product options",p:"high",a:[7229060],d:1784413800000,u:"https://app.clickup.com/t/86d3qzyvg"},
+  {id:"86d3qzyp9",n:"Shah Family - Pull SJS direct equity history and demat statement",p:"high",a:[100873114],d:1784327400000,u:"https://app.clickup.com/t/86d3qzyp9"},
+  {id:"86d3qzync",n:"Shah Family - Send updated portfolio statement by Monday",p:"high",a:[100873114],d:1784327400000,u:"https://app.clickup.com/t/86d3qzync"},
+  {id:"86d3qzyn0",n:"Shah Family - Send Isha investment form tonight",p:"high",a:[100873114],d:1784327400000,u:"https://app.clickup.com/t/86d3qzyn0"},
+  {id:"86d3qzymn",n:"Shah Family - Locate SJS DIS booklet for Nuvama trade",p:"high",a:[100873114],d:1784327400000,u:"https://app.clickup.com/t/86d3qzymn"},
+  {id:"86d3qzymh",n:"Shah Family - Unwind Accelerator 655 and execute reinvestment",p:"high",a:[100873114],d:1784327400000,u:"https://app.clickup.com/t/86d3qzymh"},
+  {id:"86d3qzqrh",n:"Ashish Agarwal - Send Minutes of Meeting",p:"high",a:[100979918],d:1784327400000,u:"https://app.clickup.com/t/86d3qzqrh"},
+  {id:"86d3qzqrg",n:"Kamat Family - Send Minutes of Meeting",p:"high",a:[100873114],d:1784327400000,u:"https://app.clickup.com/t/86d3qzqrg"},
+  {id:"86d3qzqra",n:"Ashish Agarwal - Block calendar for next in-person meeting",p:"high",a:[100979918],d:1784327400000,u:"https://app.clickup.com/t/86d3qzqra"},
+  {id:"86d3qzqr6",n:"Ashish Agarwal - Complete portfolio audit and send first-cut financial plan",p:"high",a:[100979918],d:1784327400000,u:"https://app.clickup.com/t/86d3qzqr6"},
+  {id:"86d3qzqr3",n:"Ashish Agarwal - Chase for current demat holding statement",p:"high",a:[100979918],d:1784327400000,u:"https://app.clickup.com/t/86d3qzqr3"},
+  {id:"86d3qzqr0",n:"Ashish Agarwal - Chase for parents PAN mobile email combinations",p:"high",a:[100979918],d:1784327400000,u:"https://app.clickup.com/t/86d3qzqr0"},
+  {id:"86d3qzqqy",n:"Ashish Agarwal - Chase for monthly expense Excel",p:"high",a:[100979918],d:1784327400000,u:"https://app.clickup.com/t/86d3qzqqy"},
+  {id:"86d3qzqqv",n:"Kamat Family - Share meeting deck and minutes with client",p:"high",a:[100873114],d:1784327400000,u:"https://app.clickup.com/t/86d3qzqqv"},
+  {id:"86d3qzqqr",n:"Kamat Family - Redirect 30k/month SIP to Anand Wealth model portfolio",p:"high",a:[100873114],d:1784327400000,u:"https://app.clickup.com/t/86d3qzqqr"},
+  {id:"86d3qzqqp",n:"Kamat Family - Register client for Thursday shareholder management call",p:"high",a:[100873114],d:1784327400000,u:"https://app.clickup.com/t/86d3qzqqp"},
+  {id:"86d3qzqqm",n:"Kamat Family - Review balance sheet and suggest indicative allocation",p:"high",a:[100873114],d:1784327400000,u:"https://app.clickup.com/t/86d3qzqqm"},
   {id:"86d3qyutz",n:"Atul Kamat - 30k SIP",p:"normal",a:[100873114],d:1784673000000,u:"https://app.clickup.com/t/86d3qyutz"},
   {id:"86d3qypqy",n:"Ashish Agrawal - WILL and TRUST Discussion",p:null,a:[100979918],d:null,u:"https://app.clickup.com/t/86d3qypqy"},
   {id:"86d3qyppu",n:"Ashish Agrawal - DE Audit",p:null,a:[100979918],d:null,u:"https://app.clickup.com/t/86d3qyppu"},
@@ -238,7 +258,7 @@ const RAW = [
   {id:"86d3qxevc",n:"BP Singh - Coordinate iPhone Pickup for Mid-September",p:"high",a:[100979918],d:1784327400000,u:"https://app.clickup.com/t/86d3qxevc"},
   {id:"86d3qmf3a",n:"Darak - Projected value for 31st march 2027",p:"normal",a:[100873114],d:1784673000000,u:"https://app.clickup.com/t/86d3qmf3a"},
   {id:"86d3qfau6",n:"Sumet Neogi - SIP to be increased",p:"high",a:[100873114],d:1784500200000,u:"https://app.clickup.com/t/86d3qfau6"},
-  {id:"86d3qfan6",n:"Shankar - Move all demat from arssbl to wealth region",p:"high",a:[7229060],d:1784241000000,u:"https://app.clickup.com/t/86d3qfan6"},
+  {id:"86d3qfan6",n:"Shankar - Move all demat from arssbl to wealth region",p:"high",a:[100873114],d:1784500200000,u:"https://app.clickup.com/t/86d3qfan6"},
   {id:"86d3qen06",n:"Hathi Family - Update real estate register with Tulsiani rental",p:"high",a:[100873114],d:1784500200000,u:"https://app.clickup.com/t/86d3qen06"},
   {id:"86d3qen04",n:"Hathi Family - Model cash flow plan for Rs 10L/month freed from Tulsiani loan",p:"high",a:[100873114],d:1784673000000,u:"https://app.clickup.com/t/86d3qen04"},
   {id:"86d3qemxc",n:"Hathi Family - Prepare AUM comparison for Nuvama, 360 One, HDFC AMC",p:"high",a:[100873114],d:1784500200000,u:"https://app.clickup.com/t/86d3qemxc"},
@@ -265,7 +285,7 @@ const RAW = [
   {id:"86d3nrapu",n:"Pinak Pramanick - Send updated trust demat forms",p:"high",a:[100979918],d:1784500200000,u:"https://app.clickup.com/t/86d3nrapu"},
   {id:"86d3nrapt",n:"Pinak Pramanick - Rerun mutual fund audit",p:"high",a:[100979918],d:1784500200000,u:"https://app.clickup.com/t/86d3nrapt"},
   {id:"86d3kkwh3",n:"Anvi Gandhi - Prepare estate organizer Excel",p:"normal",a:[100979918],d:1784500200000,u:"https://app.clickup.com/t/86d3kkwh3"},
-  {id:"86d3kkw7d",n:"Anvi Gandhi - Send lost folio change-of-broker paperwork",p:"high",a:[7229060],d:1784327400000,u:"https://app.clickup.com/t/86d3kkw7d"},
+  {id:"86d3kkw7d",n:"Anvi Gandhi - Send lost folio change-of-broker paperwork",p:"high",a:[7229060],d:1784845800000,u:"https://app.clickup.com/t/86d3kkw7d"},
   {id:"86d3kkd1b",n:"Anvi Gandhi - COB",p:"urgent",a:[100979918],d:1784500200000,u:"https://app.clickup.com/t/86d3kkd1b"},
   {id:"86d3kdh97",n:"Isha - Purchase 3L",p:"urgent",a:[100873114],d:1784500200000,u:"https://app.clickup.com/t/86d3kdh97"},
   {id:"86d3kbpu2",n:"Prepare Excel Portfolio for Anvi",p:"high",a:[100979918],d:1784500200000,u:"https://app.clickup.com/t/86d3kbpu2"},
@@ -323,7 +343,7 @@ const RAW = [
   {id:"86d2rrzcn",n:"Anupam - Draft WILL",p:"urgent",a:[100979918],d:1784759400000,u:"https://app.clickup.com/t/86d2rrzcn"},
   {id:"86d2qr4yn",n:"Atul Kamat - WILL",p:"urgent",a:[100873114],d:1784673000000,u:"https://app.clickup.com/t/86d2qr4yn"},
   {id:"86d2qr4pn",n:"Atul Kamat - LF Audit",p:"high",a:[100873114],d:1784845800000,u:"https://app.clickup.com/t/86d2qr4pn"},
-  {id:"86d2pq0ww",n:"Asawa - exit from DE and UK shares",p:"urgent",a:[7229060],d:1784241000000,u:"https://app.clickup.com/t/86d2pq0ww"},
+  {id:"86d2pq0ww",n:"Asawa - exit from DE and UK shares",p:"urgent",a:[7229060],d:1784413800000,u:"https://app.clickup.com/t/86d2pq0ww"},
   {id:"86d2pp7by",n:"Kanchan - Tax Optimization Strategy for ESOPs",p:null,a:[100873114],d:1784844000000,u:"https://app.clickup.com/t/86d2pp7by"},
   {id:"86d2pp761",n:"Kanchan - Lost Folio",p:null,a:[100873114],d:1784844000000,u:"https://app.clickup.com/t/86d2pp761"},
   {id:"86d2pp2wh",n:"Sanjay - Add 2nd daughter as nominee",p:"high",a:[100873114],d:1784845800000,u:"https://app.clickup.com/t/86d2pp2wh"},
@@ -332,7 +352,7 @@ const RAW = [
   {id:"86d2mjfne",n:"Benaifer - SIPs stop from Sept",p:null,a:[100873114],d:1788300000000,u:"https://app.clickup.com/t/86d2mjfne"},
   {id:"86d2mfz25",n:"Vinay K - MF Audit re-visit",p:"high",a:[100979918],d:1785450600000,u:"https://app.clickup.com/t/86d2mfz25"},
   {id:"86d2kue4d",n:"Send Netmob Data to Siddhartha",p:"urgent",a:[100979918],d:1784759400000,u:"https://app.clickup.com/t/86d2kue4d"},
-  {id:"86d2ktt3v",n:"Asawa - WILL registration",p:"urgent",a:[100979918],d:1784500200000,u:"https://app.clickup.com/t/86d2ktt3v"},
+  {id:"86d2ktt3v",n:"Asawa - WILL registration",p:"urgent",a:[100979918,7229060],d:1784500200000,u:"https://app.clickup.com/t/86d2ktt3v"},
   {id:"86d2jxjfc",n:"Dhritiman - NACH Exceeded",p:"normal",a:[100873114],d:1786401000000,u:"https://app.clickup.com/t/86d2jxjfc"},
   {id:"86d2hu8x5",n:"Anvi WILLs draft to be sent",p:"high",a:[100979918],d:1784673000000,u:"https://app.clickup.com/t/86d2hu8x5"},
   {id:"86d2bg3v0",n:"Income updation - Manu Kumar",p:"normal",a:[100979918],d:1785105000000,u:"https://app.clickup.com/t/86d2bg3v0"},
@@ -385,6 +405,7 @@ const RAW = [
   {id:"85ztemp5e",n:"Cynthia Monthly Redemption 1 lakhs",p:"urgent",a:[100979918],d:1785105000000,u:"https://app.clickup.com/t/85ztemp5e"},
   {id:"85zt94pgx",n:"Check OD Data",p:"urgent",a:[7229060],d:1784500200000,u:"https://app.clickup.com/t/85zt94pgx"},
   // Deals list (901600290383)
+  {id:"86d3r1b2z",n:"Ojash - SJS - Exit SP and Buy Nuvama 25L rest to MFs",p:null,a:[7229060],d:null,u:"https://app.clickup.com/t/86d3r1b2z"},
   {id:"86d3p1xar",n:"Shankar - 5cr Debetures",p:"high",a:[7229060],d:1784068200000,u:"https://app.clickup.com/t/86d3p1xar"},
   {id:"86d3hkp2r",n:"Suvarna SP - 50 lakhs",p:null,a:[7229060],d:null,u:"https://app.clickup.com/t/86d3hkp2r"},
   {id:"86d35xxgp",n:"Sumit Neogi - Plan Rs 25L structured product for July-August",p:"high",a:[7229060],d:1783290600000,u:"https://app.clickup.com/t/86d35xxgp"},
